@@ -1,0 +1,166 @@
+// ============================================
+// Trueque o Trato - Database Schema
+// ============================================
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// Auth Models
+// ============================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ============================================
+// Business Models
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  bio           String?
+  karma         Int       @default(0)
+
+  // Auth relations
+  accounts Account[]
+  sessions Session[]
+
+  // Business relations
+  items          Item[]
+  wishlist       Wishlist[]
+  sentTrades     Trade[]    @relation("TradesSent")
+  receivedTrades Trade[]    @relation("TradesReceived")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Item {
+  id          String     @id @default(cuid())
+  title       String
+  description String     @db.Text
+  images      String[]
+  category    String
+  condition   String?
+  location    String?
+  status      ItemStatus @default(AVAILABLE)
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  offeredInTrades   Trade[] @relation("ItemOffered")
+  requestedInTrades Trade[] @relation("ItemRequested")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([category])
+  @@index([status])
+  @@map("items")
+}
+
+model Wishlist {
+  id       String   @id @default(cuid())
+  keywords String[]
+  category String?
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("wishlists")
+}
+
+model Trade {
+  id     String      @id @default(cuid())
+  status TradeStatus @default(PENDING)
+  note   String?     @db.Text
+
+  senderId   String @map("sender_id")
+  receiverId String @map("receiver_id")
+  sender     User   @relation("TradesSent", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User   @relation("TradesReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  itemOfferedId   String @map("item_offered_id")
+  itemRequestedId String @map("item_requested_id")
+  itemOffered     Item   @relation("ItemOffered", fields: [itemOfferedId], references: [id])
+  itemRequested   Item   @relation("ItemRequested", fields: [itemRequestedId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([status])
+  @@map("trades")
+}
+
+// ============================================
+// Enums
+// ============================================
+
+enum ItemStatus {
+  AVAILABLE
+  TRADED
+  HIDDEN
+}
+
+enum TradeStatus {
+  PENDING
+  ACCEPTED
+  COMPLETED
+  REJECTED
+}
