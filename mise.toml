@@ -1,0 +1,48 @@
+[tools]
+node = "24.21.0" # Alineado con el resto de proyectos; pnpm 11 exige Node >= 22.13.
+pnpm = "11.28.1" # Igual que "packageManager" en package.json; lockfile v9.
+"github:docker/compose" = "5.5.1"
+
+[tasks.setup]
+description = "Crea .env si falta (puertos por worktree), instala dependencias bloqueadas y genera Prisma; no toca la BD"
+run = ["node scripts/dev-env.mjs", "pnpm install --frozen-lockfile", "pnpm db:generate"]
+
+[tasks.dev]
+description = "Arranca Next.js en el PORT de .env"
+env = { _.file = ".env" }
+run = "pnpm dev"
+
+[tasks.build]
+description = "prisma generate + next build"
+run = ["pnpm db:generate", "pnpm build"]
+
+[tasks.lint]
+run = "pnpm lint"
+
+[tasks.typecheck]
+run = ["pnpm db:generate", "pnpm typecheck"]
+
+[tasks.check]
+description = "prisma generate + lint + typecheck (el proyecto aún no tiene tests)"
+run = ["pnpm db:generate", "pnpm lint", "pnpm typecheck"]
+
+[tasks."services:up"]
+description = "Levanta Postgres + MinIO aislados de este worktree, crea el bucket y espera a que estén listos"
+run = [
+  "node --env-file=.env scripts/dev-compose.mjs up --detach --wait --wait-timeout 120 db minio",
+  "node --env-file=.env scripts/dev-compose.mjs run --rm minio-init",
+]
+
+[tasks."services:down"]
+description = "Para los servicios locales conservando los datos"
+run = "node --env-file=.env scripts/dev-compose.mjs down"
+
+[tasks."services:status"]
+run = "node --env-file=.env scripts/dev-compose.mjs ps --all"
+
+[tasks."db:generate"]
+run = "pnpm db:generate"
+
+[tasks."db:migrate"]
+description = "Aplica las migraciones versionadas a la BD configurada (prisma migrate deploy)"
+run = "pnpm exec prisma migrate deploy"

@@ -1,4 +1,7 @@
-approveBuildsAllowlist: prisma,@prisma/engines
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+# pnpm 11: only these dependencies may run install scripts.
+allowBuilds:
+  '@prisma/engines': true
+  prisma: true
+  msw: false
+  sharp: false
+  unrs-resolver: false
