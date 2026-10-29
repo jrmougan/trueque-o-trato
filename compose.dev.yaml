@@ -21,7 +21,7 @@ services:
   # Las imágenes minio/minio y minio/mc ya no se publican en Docker Hub; se usa la
   # variante -dev de Chainguard (incluye sh y mc), fijada por digest.
   minio:
-    image: cgr.dev/chainguard/minio:latest-dev@sha256:ddb2b6f82c3732f1e1688c9278fa08d857ac94e06f90f05ba096d56b9c68ffa3
+    image: cgr.dev/chainguard/minio:latest-dev@sha256:d1cf363a714e47630527a55edf1f7513a85475c344e732407cbe21e2acc7929c
     command: ["server", "/data", "--console-address", ":9001"]
     environment:
       MINIO_ROOT_USER: ${S3_ACCESS_KEY:?Ejecuta mise run setup primero}
@@ -39,7 +39,7 @@ services:
 
   # Crea el bucket (idempotente) y lo deja con lectura pública.
   minio-init:
-    image: cgr.dev/chainguard/minio:latest-dev@sha256:ddb2b6f82c3732f1e1688c9278fa08d857ac94e06f90f05ba096d56b9c68ffa3
+    image: cgr.dev/chainguard/minio:latest-dev@sha256:d1cf363a714e47630527a55edf1f7513a85475c344e732407cbe21e2acc7929c
     depends_on:
       minio:
         condition: service_healthy
