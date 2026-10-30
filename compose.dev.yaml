@@ -3,7 +3,7 @@
 # credenciales y puertos propios por checkout/worktree; todo escucha en 127.0.0.1.
 services:
   db:
-    image: docker.io/library/postgres:17-alpine
+    image: docker.io/library/postgres:18-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?Ejecuta mise run setup primero}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Ejecuta mise run setup primero}
