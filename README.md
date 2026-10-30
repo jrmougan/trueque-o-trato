@@ -5,8 +5,8 @@ Auth.js (NextAuth v5) and S3-compatible image storage (MinIO in development).
 
 ## Getting Started
 
-Tool versions are pinned in `mise.toml` (Node 24.21.0, pnpm 11.28.1 and Docker
-Compose 5.5.1, used through Docker or Podman).
+Tool versions are pinned in `mise.toml` (Node 26.13.0, pnpm 12.16.1 and Docker
+Compose 5.6.1, used through Docker or Podman).
 
 ```bash
 mise install
