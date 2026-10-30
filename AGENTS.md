@@ -6,7 +6,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Development environment
 
-Tool versions are pinned in `mise.toml` (Node 24.21.0, pnpm 11.28.1). Use the mise tasks:
+Tool versions are pinned in `mise.toml` (Node 26.13.0, pnpm 12.16.1). Use the mise tasks:
 
 ```bash
 mise install
