@@ -1,6 +1,6 @@
 [tools]
 node = "24.21.0" # Alineado con el resto de proyectos; pnpm 11 exige Node >= 22.13.
-pnpm = "11.28.1" # Igual que "packageManager" en package.json; lockfile v9.
+pnpm = "11.28.10" # Igual que "packageManager" en package.json; lockfile v9.
 "github:docker/compose" = "5.5.1"
 
 [tasks.setup]

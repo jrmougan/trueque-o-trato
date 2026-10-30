@@ -2,7 +2,7 @@
   "name": "trueque-o-trato",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.28.1",
+  "packageManager": "pnpm@11.28.10",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
