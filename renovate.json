@@ -2,5 +2,42 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "minimumReleaseAge": "3 days",
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "typescript"
+      ],
+      "allowedVersions": "<7"
+    },
+    {
+      "description": "Postgres major upgrades need a dump/restore and the new /var/lib/postgresql mount (recipe in PR #6)",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "postgres",
+        "docker.io/library/postgres"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "cgr.dev/chainguard/minio"
+      ],
+      "matchUpdateTypes": [
+        "digest"
+      ],
+      "schedule": [
+        "before 6am on monday"
+      ]
+    }
   ]
 }
